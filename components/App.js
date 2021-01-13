@@ -4,7 +4,6 @@ const template = `<div>
       app
       shrink-on-scroll
       color="indigo accent-3"
-      
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
