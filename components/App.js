@@ -3,7 +3,7 @@ const template = `<div>
     <v-app-bar
       app
       shrink-on-scroll
-      color="secondary"
+      color="indigo accent-3"
       
     >
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
@@ -15,10 +15,11 @@ const template = `<div>
       </v-app-bar>
 
     <v-main>
-    <v-text-field
+    <v-text-field 
       label="Filtro de Búsqueda"
       placeholder="Aplique el filtro para buscar por nombre, ciudad o email"
       v-model="filtro"
+      class="mx-auto pa-3"
     />
     </v-card-text>
     <v-divider />
@@ -49,16 +50,17 @@ const template = `<div>
             :key="n"
             cols="6"
           >
-            <v-card height="220"  class="mx-auto"  color="primary">
-              Nombre de usuario: {{dato.name}}
-            <br></br>
-              Username: {{dato.username}}
-            <br></br>
-              Email: {{dato.email}}
-            <br></br>
-              Ciudad: {{dato.address.city}}
-            <br></br>
-              Empresa: {{dato.company.name}}</v-card>
+            <v-card class="mx-auto pa-3"  color="indigo lighten-5
+            ">
+            <b>Nombre de usuario:</b> {{dato.name}}
+            <br />
+            <b>Username:</b> {{dato.username}}
+            <br />
+            <b>Email:</b> {{dato.email}}
+            <br />
+            <b>Ciudad:</b> {{dato.address.city}}
+            <br />
+            <b>Empresa:</b> {{dato.company.name}}</v-card>
           </v-col>
         </v-row>
       </v-container>
