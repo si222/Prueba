@@ -12,31 +12,16 @@ const template = `<div>
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
-    </v-app-bar>
+      </v-app-bar>
 
     <v-main>
-
-
-      <v-autocomplete
-        v-model="model"
-        :items="items"
-        :loading="isLoading"
-        :search-input.sync="search"
-        color="black"
-        hide-no-data
-        hide-selected
-        item-text="Nombre"
-        item-value="Usuario"
-        label="Filtro de búsqueda"
-        placeholder="Aplique el filtro para buscar por usuario, email o ciudad"
-        prepend-icon="mdi-database-search"
-        return-object
-      ></v-autocomplete>
+    <v-text-field
+      label="Filtro de Búsqueda"
+      placeholder="Aplique el filtro para buscar por nombre, ciudad o email"
+      v-model="filtro"
+    />
     </v-card-text>
-    <v-divider></v-divider>
+    <v-divider />
     <v-expand-transition>
       <v-list
         v-if="model"
@@ -52,19 +37,6 @@ const template = `<div>
         </v-list-item>
       </v-list>
     </v-expand-transition>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn
-        :disabled="!model"
-        color="grey darken-3"
-        @click="model = null"
-      >
-        Limpiar
-        <v-icon center>
-          mdi-close-circle
-        </v-icon>
-      </v-btn>
-    </v-card-actions>
   </v-card>
         </v-col>
       </v-row>
@@ -73,7 +45,7 @@ const template = `<div>
       <v-container>
         <v-row>
           <v-col
-            v-for="dato in datos"
+            v-for="dato in resultados"
             :key="n"
             cols="6"
           >
@@ -98,53 +70,33 @@ export default {
     name : 'app',
     template,
     data : ()=>({
-        datos : '',
-        nombreLimit: 60,
-        entries: [],
-        isLoading: false,
-        model: null,
-        search: null,
+        datos : [],
+        filtro : ''
     }),
     created() {
         fetch('https://jsonplaceholder.typicode.com/users')
             .then(r => r.json())
             .then( r => {this.datos = r})
-    }, 
-    computed: {
-      fields () {
-        if (!this.model) return []
-        return Object.keys(this.model).map(key => {
-          return {
-            key,
-            value: this.model[key] || 'n/a',
-          }
-        })
-      },
-      items () {
-        return this.entries.map(entry => {
-          const Nombre = entry.Nombre.length > this.nombreLimit
-            ? entry.Nombre.slice(0, this.nombreLimit) + '...'
-            : entry.Nombre
-          return Object.assign({}, entry, { Nombre })
-        })
-      },
     },
-    watch: {
-      search (val) {
-        // Items have already been loaded
-        if (this.items.length > 0) return
-        // Items have already been requested
-        if (this.isLoading) return
-        this.isLoading = true
-        // Lazily load input items
-        fetch('https://jsonplaceholder.typicode.com/users')
-          .then(res => res.json())
-          .then(res => {
-            const { count, entries } = res
-            this.count = count
-            this.entries = entries
-          })
-          .finally(() => (this.isLoading = false))
-      },
+    computed: {
+      // Para filtrar los resultados por ciudad, nombre o email y que sólo traiga los contenedores que se filtran por dichos resultados
+      resultados(){
+        return this.datos.filter(dato => {
+          if (this.filtro === '') {
+            return true
+          }
+          let isValid = false
+          if (dato.name.toLowerCase().includes(this.filtro.toLowerCase())) {
+            isValid = true
+          }
+          if (dato.address.city.toLowerCase().includes(this.filtro.toLowerCase())) {
+            isValid = true
+          }
+          if (dato.email.toLowerCase().includes(this.filtro.toLowerCase())) {
+            isValid = true
+          }
+          return isValid
+        })
+      }
     }
   }
